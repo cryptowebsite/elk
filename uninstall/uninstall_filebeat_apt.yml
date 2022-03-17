@@ -1,0 +1,6 @@
+---
+- name: Remove Filebeat
+  become: true
+  apt:
+    name: "/tmp/filebeat-{{ filebeat_version }}-amd64.deb"
+    state: absent

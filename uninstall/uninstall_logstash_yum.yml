@@ -1,0 +1,6 @@
+---
+- name: Remove Logstash
+  become: true
+  yum:
+    name: "/tmp/logstash-{{ logstash_version }}-x86_64.rpm"
+    state: absent

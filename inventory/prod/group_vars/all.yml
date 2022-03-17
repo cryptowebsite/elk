@@ -1,0 +1,9 @@
+---
+logstash_version: "7.14.0"
+kibana_version: "7.14.0"
+filebeat_version: "7.14.0"
+elasticsearch_version: "7.14.0"
+logstash_install_type: remote
+elastic_install_type: remote
+kibana_install_type: remote
+filebeat_install_type: remote

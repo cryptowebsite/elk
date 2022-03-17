@@ -1,0 +1,35 @@
+---
+- name: "Download new Logstash's rpm"
+  get_url:
+    url: "https://artifacts.elastic.co/downloads/logstash/logstash-{{ logstash_new_version }}-x86_64.rpm"
+    dest: "files/logstash-{{ logstash_new_version }}-x86_64.rpm"
+    validate_certs: false
+  register: download_logstash
+  delegate_to: localhost
+  until: download_logstash is succeeded
+  when: logstash_install_type == 'remote'
+- name: Copy new Logstash to managed node
+  copy:
+    src: "files/logstash-{{ logstash_new_version }}-x86_64.rpm"
+    mode: 0755
+    dest: "/tmp/logstash-{{ logstash_new_version }}-x86_64.rpm"
+- name: Install new Logstash
+  become: true
+  yum:
+    name: "/tmp/logstash-{{ logstash_new_version }}-x86_64.rpm"
+    state: present
+- name: Configure new Logstash
+  become: true
+  template:
+    src: logstash.yml.j2
+    mode: 0644
+    dest: /etc/logstash/logstash.yml
+  notify: restart Logstash
+
+  handlers:
+    - name: restart Logstash
+      become: true
+      service:
+        name: logstash
+        state: restarted
+      when: ansible_virtualization_type != 'docker'

@@ -1,0 +1,6 @@
+---
+- name: Remove Kibana
+  become: true
+  apt:
+    name: "/tmp/kibana-{{ kibana_version }}-amd64.deb"
+    state: absent

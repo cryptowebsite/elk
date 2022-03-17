@@ -1,0 +1,5 @@
+---
+logstash_version: "7.17.0"
+logstash_home: "/opt/logstash/{{ logstash_version }}"
+java_jdk_version: 11.0.14
+java_oracle_jdk_package: jdk-{{ java_jdk_version }}_linux-x64_bin.tar.gz

@@ -1,0 +1,6 @@
+---
+- name: Remove Elasticsearch
+  become: true
+  apt:
+    name: "/tmp/elasticsearch-{{ elasticsearch_version }}-amd64.deb"
+    state: absent

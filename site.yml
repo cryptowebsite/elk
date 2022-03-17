@@ -1,0 +1,57 @@
+---
+- name: Elasticsearch
+  hosts: elasticsearch
+  gather_facts: yes
+  roles:
+    - ./roles/elastic
+- name: Kibana
+  hosts: kibana
+  gather_facts: yes
+  roles:
+    - ./roles/kibana
+- name: Filebeat
+  hosts: filebeat
+  gather_facts:
+  roles:
+    - ./roles/filebeat
+- name: Logstash
+  hosts: elasticsearch
+  gather_facts: yes
+  roles:
+    - ./roles/logstash
+
+#- name: Update Elasticsearch
+#  hosts: elasticsearch
+#  tasks:
+#    - include_tasks: "uninstall/uninstall_elastic_{{ ansible_facts.pkg_mgr }}.yml"
+#    - name: Set new version to update elasticsearch
+#      set_fact:
+#        elasticsearch_new_version: "7.15.0"
+#    - include_tasks: "update/update_elastic_{{ ansible_facts.pkg_mgr }}.yml"
+
+#- name: Update Logstash
+#  hosts: elasticsearch
+#  tasks:
+#    - include_tasks: "uninstall/uninstall_logstash_{{ ansible_facts.pkg_mgr }}.yml"
+#    - name: Set new version to update elasticsearch
+#      set_fact:
+#        logstash_new_version: "7.15.0"
+#    - include_tasks: "update/update_logstash_{{ ansible_facts.pkg_mgr }}.yml"
+#
+#- name: Update Filebeat
+#  hosts: filebeat
+#  tasks:
+#    - include_tasks: "uninstall/uninstall_filebeat_{{ ansible_facts.pkg_mgr }}.yml"
+#    - name: Set new version to update filebeat
+#      set_fact:
+#        filebeat_new_version: "7.15.0"
+#    - include_tasks: "update/update_filebeat_{{ ansible_facts.pkg_mgr }}.yml"
+#
+#- name: Update Kibana
+#  hosts: kibana
+#  tasks:
+#    - include_tasks: "uninstall/uninstall_kibana_{{ ansible_facts.pkg_mgr }}.yml"
+#    - name: Set new version to update kibana
+#      set_fact:
+#        kibana_new_version: "7.15.0"
+#    - include_tasks: "update/update_kibana_{{ ansible_facts.pkg_mgr }}.yml"

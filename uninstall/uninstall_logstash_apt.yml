@@ -1,0 +1,6 @@
+---
+- name: Remove Logstash
+  become: true
+  apt:
+    name: "/tmp/logstash-{{ logstash_version }}-amd64.deb"
+    state: absent

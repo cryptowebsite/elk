@@ -1,0 +1,4 @@
+output.logstash:
+  hosts: ["http://{{ hostvars['el-centos']['ansible_host'] }}:5044"]
+setup.kibana.host: "http://{{ hostvars['kbn-debian']['ansible_host'] }}:5601"
+filebeat.config.modules.path: ${path.config}/modules.d/*.yml

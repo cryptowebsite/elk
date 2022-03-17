@@ -1,0 +1,21 @@
+---
+- name: "Download new Elasticsearch's rpm"
+  get_url:
+    url: "https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-{{ elasticsearch_new_version }}-x86_64.rpm"
+    dest: "files/elasticsearch-{{ elasticsearch_new_version }}-x86_64.rpm"
+    validate_certs: false
+  register: download_elastic
+  delegate_to: localhost
+  until: download_elastic is succeeded
+  when: elastic_install_type == 'remote'
+- name: Copy new Elasticsearch to managed node
+  copy:
+    src: "files/elasticsearch-{{ elasticsearch_new_version }}-x86_64.rpm"
+    mode: 0755
+    dest: "/tmp/elasticsearch-{{ elasticsearch_new_version }}-x86_64.rpm"
+- name: Install new Elasticsearch
+  become: true
+  yum:
+    name: "/tmp/elasticsearch-{{ elasticsearch_new_version }}-x86_64.rpm"
+    state: present
+- include_tasks: "configure_elasticsearch.yml"

@@ -1,0 +1,22 @@
+---
+- name: "Download new Elasticsearch's deb"
+  get_url:
+    url: "https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-{{ elasticsearch_new_version }}-amd64.deb"
+    dest: "files/elasticsearch-{{ elasticsearch_new_version }}-amd64.deb"
+    validate_certs: false
+  register: download_elastic
+  delegate_to: localhost
+  until: download_elastic is succeeded
+  when: elastic_install_type == 'remote'
+- name: Copy new Elasticsearch to manage host
+  copy:
+    src: "files/elasticsearch-{{ elasticsearch_new_version }}-amd64.deb"
+    mode: 0755
+    dest: "/tmp/elasticsearch-{{ elasticsearch_new_version }}-amd64.deb"
+- name: Install new Elasticsearch
+  become: true
+  apt:
+    deb: "/tmp/elasticsearch-{{ elasticsearch_new_version }}-amd64.deb"
+    state: present
+
+- include_tasks: "configure_elasticsearch.yml"

@@ -1,0 +1,49 @@
+---
+- name: "Download new Filebeat's deb"
+  get_url:
+    url: "https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-{{ filebeat_new_version }}-amd64.deb"
+    dest: "files/filebeat-{{ filebeat_new_version }}-amd64.deb"
+    validate_certs: false
+  delegate_to: localhost
+  register: download_filebeat
+  until: download_filebeat is succeeded
+  when: filebeat_install_type == 'remote'
+- name: Copy new Filebeat to manage host
+  copy:
+    src: "files/filebeat-{{ filebeat_new_version }}-amd64.deb"
+    mode: 0755
+    dest: "/tmp/filebeat-{{ filebeat_new_version }}-amd64.deb"
+- name: Install new Filebeat
+  become: true
+  apt:
+    deb: "/tmp/filebeat-{{ filebeat_new_version }}-amd64.deb"
+    state: present
+- name: Configure new Filebeat
+  become: true
+  template:
+    src: filebeat.yml.j2
+    mode: 0644
+    dest: /etc/filebeat/filebeat.yml
+- name: Set new filebeat systemwork
+  become: true
+  command:
+    cmd: filebeat modules enable system
+    chdir: /usr/share/filebeat/bin
+  register: filebeat_modules
+  changed_when: filebeat_modules.stdout != 'Module system is already enabled'
+  notify: restart Filebeat
+- name: Load new kibana dashboard
+  become: true
+  command:
+    cmd: filebeat setup
+    chdir: /usr/share/filebeat/bin
+  register: filebeat_setup
+  until: filebeat_setup is succeeded
+
+  handlers:
+    - name: restart Filebeat
+      become: true
+      service:
+        name: filebeat
+        state: restarted
+      when: ansible_virtualization_type != 'docker'
