@@ -1,8 +1,8 @@
 ---
-  # - src: git@github.com:cryptowebsite/mnt-homeworks-ansible.git
-  #   scm: git
-  #   version: "2.1.4"
-  #   name: elastic
+  - src: git@github.com:cryptowebsite/mnt-homeworks-ansible.git
+    scm: git
+    version: "2.1.4"
+    name: elastic
   - src: git@github.com:cryptowebsite/kibana-role.git
     scm: git
     version: "v0.1.0"
