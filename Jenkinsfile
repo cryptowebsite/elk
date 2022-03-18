@@ -1,17 +1,52 @@
-node("linux"){
-    stage("Git checkout"){
-        git credentialsId: '13c50aa8-dc9e-4c1f-96a2-956adf5a594c', url: 'git@github.com:cryptowebsite/elk.git'
+pipeline {
+    agent {
+        label 'linux'
     }
-    stage("Sample define secret_check"){
-        secret_check=true
-    }
-    stage("Run playbook"){
-        if (secret_check){
-            sh 'ansible-playbook site.yml -i inventory/prod.yml'
+    stages {
+        stage('checkout playbook'){
+            steps{
+                dir('elk') {
+                    git branch: 'main', credentialsId: '13c50aa8-dc9e-4c1f-96a2-956adf5a594c', url: 'git@github.com:cryptowebsite/elk.git'
+                }
+            }
         }
-        else{
-            echo 'need more action'
+        stage('Install requirements') {
+            steps{
+                dir('elk'){
+                    sh 'pip3 install ansible-galaxy'
+                }
+                dir('elk'){
+                    sh 'ansible-galaxy install -p roles/ -r requirements.yml'
+                }
+                dir('elk/roles/elastic'){
+                    sh 'pip3 install -r test-requirements.txt'
+                }
+                dir('elk/roles/filebeat'){
+                    sh 'pip3 install -r test-requirements.txt'
+                }
+                dir('elk/roles/kibana'){
+                    sh 'pip3 install -r test-requirements.txt'
+                }
+                dir('elk/roles/logstash'){
+                    sh 'pip3 install -r test-requirements.txt'
+                }
+            }
         }
-        
+        stage('Run Molecule'){
+            steps{
+                dir('elk/roles/elastic'){
+                    sh 'molecule test'
+                }
+                dir('elk/roles/filebeat'){
+                    sh 'molecule test'
+                }
+                dir('elk/roles/kibana'){
+                    sh 'molecule test'
+                }
+                dir('elk/roles/logstash'){
+                    sh 'molecule test'
+                }
+            }
+        }
     }
 }
