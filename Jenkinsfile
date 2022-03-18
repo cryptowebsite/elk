@@ -13,9 +13,6 @@ pipeline {
         stage('Install requirements') {
             steps{
                 dir('elk'){
-                    sh 'pip3 install ansible-galaxy'
-                }
-                dir('elk'){
                     sh 'ansible-galaxy install -p roles/ -r requirements.yml'
                 }
                 dir('elk/roles/elastic'){
