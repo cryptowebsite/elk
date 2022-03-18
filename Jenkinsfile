@@ -6,7 +6,7 @@ pipeline {
         stage('checkout playbook'){
             steps{
                 dir('elk') {
-                    git branch: 'main', credentialsId: '13c50aa8-dc9e-4c1f-96a2-956adf5a594c', url: 'git@github.com:cryptowebsite/elk.git'
+                    git branch: 'main', credentialsId: 'a9343f9a-4071-476b-b798-7fda404c0e64', url: 'git@github.com:cryptowebsite/elk.git'
                 }
             }
         }
